@@ -29,7 +29,7 @@ module Datadog
           def patch
             patch_before_initialize
             patch_after_initialize
-            # patch_rails_runner
+            patch_rails_runner
           end
 
           def patch_before_initialize
