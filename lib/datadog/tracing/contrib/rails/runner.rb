@@ -79,9 +79,11 @@ module Datadog
         # and promptly patch {Rails::Command::RunnerCommand} when it is loaded.
         module Command
           def find_by_namespace(*args)
+            ::Rails.logger.info("made it into the patched find_by_namespace")
             ret = super
             # Patch RunnerCommand if it is loaded and not already patched.
             if defined?(::Rails::Command::RunnerCommand) && !(::Rails::Command::RunnerCommand < Runner)
+              ::Rails.logger.info("patching RunnerCommand")
               ::Rails::Command::RunnerCommand.prepend(Runner)
             end
             ret
