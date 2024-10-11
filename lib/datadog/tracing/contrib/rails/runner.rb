@@ -57,8 +57,9 @@ module Datadog
 
           # Capture the executed source code when provided from STDIN.
           def eval(*args)
+            # raise 'oh interesting - do we get in here?' ⬅ we did make it here
             span = Datadog::Tracing.active_span
-            if span.name == Ext::SPAN_RUNNER_STDIN
+            if span&.name == Ext::SPAN_RUNNER_STDIN
               source = args[0]
               span.set_tag(
                 Ext::TAG_RUNNER_SOURCE,
@@ -79,9 +80,14 @@ module Datadog
         # and promptly patch {Rails::Command::RunnerCommand} when it is loaded.
         module Command
           def find_by_namespace(*args)
+            # We made it here ⬇️
+            # raise "made it into the patched find_by_namespace"
+
             ret = super
             # Patch RunnerCommand if it is loaded and not already patched.
             if defined?(::Rails::Command::RunnerCommand) && !(::Rails::Command::RunnerCommand < Runner)
+               # We made it here ⬇️
+               # raise "patching RunnerCommand"
               ::Rails::Command::RunnerCommand.prepend(Runner)
             end
             ret
